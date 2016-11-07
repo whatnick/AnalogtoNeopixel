@@ -7,7 +7,7 @@
 
 
 #define PIN 6 // digital pin for programming neopixels
-#define NUM_PIXELS 40 // this is the size of my neopixel strip           
+#define NUM_PIXELS 32 // this is the size of my neopixel strip           
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
@@ -43,9 +43,18 @@ void loop() {
   samplePos%=NUM_PIXELS;
   for (int i = 0; i < strip.numPixels(); i++)
   {
-     int value = capture[i]/8;
-     Serial.println(value);
-     strip.setPixelColor(i, pgm_read_dword(&colors[value]));
+     int value = capture[i]-448;
+     if(value>=0)
+     {
+        Serial.println(value);
+        strip.setPixelColor(i, pgm_read_dword(&colors[value]));
+     }
+     else
+     {
+        strip.setPixelColor(i, 0x0);
+     }
+     
+     
   }
   cli();        // no interrupts while writing the neopixels
   strip.show();
